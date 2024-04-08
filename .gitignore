@@ -1,0 +1,42 @@
+# Ignore Keil project files
+/*.uvprojx
+/*.uvoptx
+/*.uvproj
+/*.dep
+/*.depend
+/*.depend.*
+
+# Ignore Keil workspace settings
+/*.uvmpw
+/*.uvopt
+/*.lst
+/*.bak
+/Objects
+
+# Ignore generated files
+/Output/
+/Listing/
+/*.axf
+/*.map
+/*.hex
+/*.bin
+/*.out
+
+# Ignore Keil temporary files
+*.bak
+*.chm
+*.crf
+*.crp
+*.crw
+*.dap
+*.dip
+*.dsu
+*.inf
+*.opt
+*.rep
+*.sct
+*.sfr
+*.trc
+*.trm
+*.tpt
+*.wrn
