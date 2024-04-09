@@ -6,6 +6,7 @@
 #include "delay.h"
 #include "sys.h"
 #include "usart.h"
+#include "boot.h"
 
 int main(void)
 {
@@ -24,101 +25,103 @@ int main(void)
     key_init();                         /* 初始化按键 */
     W25QXX_Init();                      // W25QXX初始化();
 
-    while (1)
-    {
-        id = W25QXX_ReadID();
-		printf("id is %X\r\n", id);
-        if (id == W25Q64 || id == NM25Q128)
-            break;
-        printf("W25Q64 Check Failed!");
-        delay_ms(500);
-    }
+    boot_main();
 
-    while (1)
-    {
-        if (g_usart_rx_cnt)
-        {
-            if (oldcount == g_usart_rx_cnt) /* 新周期内,没有收到任何数据,认为本次数据接收完成 */
-            {
-                applenth = g_usart_rx_cnt;
-                oldcount = 0;
-                g_usart_rx_cnt = 0;
-                printf("User program reception completed!\r\n");
-                printf("The reception length:%dBytes\r\n", applenth);
-            }
-            else
-                oldcount = g_usart_rx_cnt;
-        }
+    // while (1)
+    // {
+    //     id = W25QXX_ReadID();
+	// 	printf("id is %X\r\n", id);
+    //     if (id == W25Q64 || id == NM25Q128)
+    //         break;
+    //     printf("W25Q64 Check Failed!");
+    //     delay_ms(500);
+    // }
 
-        t++;
-        delay_ms(100);
+    // while (1)
+    // {
+    //     if (g_usart_rx_cnt)
+    //     {
+    //         if (oldcount == g_usart_rx_cnt) /* 新周期内,没有收到任何数据,认为本次数据接收完成 */
+    //         {
+    //             applenth = g_usart_rx_cnt;
+    //             oldcount = 0;
+    //             g_usart_rx_cnt = 0;
+    //             printf("User program reception completed!\r\n");
+    //             printf("The reception length:%dBytes\r\n", applenth);
+    //         }
+    //         else
+    //             oldcount = g_usart_rx_cnt;
+    //     }
 
-        if (t == 3)
-        {
-            LED0_TOGGLE();
-            t = 0;
+    //     t++;
+    //     delay_ms(100);
 
-            if (clearflag)
-            {
-                clearflag--;
-            }
-        }
+    //     if (t == 3)
+    //     {
+    //         LED0_TOGGLE();
+    //         t = 0;
 
-        key = key_scan(0);
+    //         if (clearflag)
+    //         {
+    //             clearflag--;
+    //         }
+    //     }
 
-        if (key == WKUP_PRES) /* WKUP按下,更新固件到FLASH */
-        {
-            if (applenth)
-            {
-                printf("Starting firmware update...\r\n");
-                if (((*(volatile uint32_t *)(0X20001000 + 4)) & 0xFF000000) == 0x08000000) /* 判断是否为0X08XXXXXX */
-                {
-                    iap_write_appbin(FLASH_APP1_ADDR, g_usart_rx_buf, applenth); /* 更新FLASH代码 */
-                    printf("The firmware update is complete!\r\n");
-                }
-                else
-                {
-                    printf("This is not a firmware!\r\n");
-                }
-            }
-            else
-                printf("No firmware to update!\r\n");
+    //     key = key_scan(0);
 
-            clearflag = 7; /* 标志更新了显示,并且设置7*300ms后清除显示 */
-        }
+    //     if (key == WKUP_PRES) /* WKUP按下,更新固件到FLASH */
+    //     {
+    //         if (applenth)
+    //         {
+    //             printf("Starting firmware update...\r\n");
+    //             if (((*(volatile uint32_t *)(0X20001000 + 4)) & 0xFF000000) == 0x08000000) /* 判断是否为0X08XXXXXX */
+    //             {
+    //                 iap_write_appbin(FLASH_APP1_ADDR, g_usart_rx_buf, applenth); /* 更新FLASH代码 */
+    //                 printf("The firmware update is complete!\r\n");
+    //             }
+    //             else
+    //             {
+    //                 printf("This is not a firmware!\r\n");
+    //             }
+    //         }
+    //         else
+    //             printf("No firmware to update!\r\n");
 
-        if (key == KEY1_PRES) /* KEY1按键按下, 运行FLASH APP代码 */
-        {
-            if (((*(volatile uint32_t *)(FLASH_APP1_ADDR + 4)) & 0xFF000000) ==
-                0x08000000) /* 判断FLASH里面是否有APP,有的话执行 */
-            {
-                printf("Starting FLASH APP!!\r\n\r\n");
-                delay_ms(10);
-                iap_load_app(FLASH_APP1_ADDR); /* 执行FLASH APP代码 */
-            }
-            else
-            {
-                printf("No FLASH APP!\r\n");
-            }
+    //         clearflag = 7; /* 标志更新了显示,并且设置7*300ms后清除显示 */
+    //     }
 
-            clearflag = 7; /* 标志更新了显示,并且设置7*300ms后清除显示 */
-        }
+    //     if (key == KEY1_PRES) /* KEY1按键按下, 运行FLASH APP代码 */
+    //     {
+    //         if (((*(volatile uint32_t *)(FLASH_APP1_ADDR + 4)) & 0xFF000000) ==
+    //             0x08000000) /* 判断FLASH里面是否有APP,有的话执行 */
+    //         {
+    //             printf("Starting FLASH APP!!\r\n\r\n");
+    //             delay_ms(10);
+    //             iap_load_app(FLASH_APP1_ADDR); /* 执行FLASH APP代码 */
+    //         }
+    //         else
+    //         {
+    //             printf("No FLASH APP!\r\n");
+    //         }
 
-        if (key == KEY0_PRES) /* KEY0按下 */
-        {
-            printf("Starting SRAM APP!!\r\n\r\n");
-            delay_ms(10);
+    //         clearflag = 7; /* 标志更新了显示,并且设置7*300ms后清除显示 */
+    //     }
 
-            if (((*(volatile uint32_t *)(0x20001000 + 4)) & 0xFF000000) == 0x20000000) /* 判断是否为0X20XXXXXX */
-            {
-                iap_load_app(0x20001000); /* SRAM地址 */
-            }
-            else
-            {
-                printf("This is not a SRAM APP!\r\n");
-            }
+    //     if (key == KEY0_PRES) /* KEY0按下 */
+    //     {
+    //         printf("Starting SRAM APP!!\r\n\r\n");
+    //         delay_ms(10);
 
-            clearflag = 7; /* 标志更新了显示,并且设置7*300ms后清除显示 */
-        }
-    }
+    //         if (((*(volatile uint32_t *)(0x20001000 + 4)) & 0xFF000000) == 0x20000000) /* 判断是否为0X20XXXXXX */
+    //         {
+    //             iap_load_app(0x20001000); /* SRAM地址 */
+    //         }
+    //         else
+    //         {
+    //             printf("This is not a SRAM APP!\r\n");
+    //         }
+
+    //         clearflag = 7; /* 标志更新了显示,并且设置7*300ms后清除显示 */
+    //     }
+    // }
 }

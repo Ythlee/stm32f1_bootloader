@@ -298,7 +298,7 @@ void W25QXX_Erase_Sector(uint32_t Dst_Addr)
     W25QXX_Wait_Busy();
     W25QXX_CS(0);                           // 使能器件
     spi2_read_write_byte(W25X_SectorErase); // 发送扇区擦除指令
-    if (W25QXX_TYPE == W25Q64)             // 如果是W25Q64的话地址为4字节的，要发送最高8位
+    if (W25QXX_TYPE == W25Q256)             // 如果是W25Q256的话地址为4字节的，要发送最高8位
     {
         spi2_read_write_byte((uint8_t)((Dst_Addr) >> 24));
     }

@@ -23,6 +23,7 @@
 #define NM25Q256 0X5218
 
 extern uint16_t W25QXX_TYPE; // 定义W25QXX芯片型号
+extern uint8_t W25QXX_BUFFER[4096];
 
 #define NORFLASH_CS_GPIO_PORT GPIOB
 #define NORFLASH_CS_GPIO_PIN GPIO_PIN_12

@@ -409,6 +409,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\stm32f1xx_it.c</FilePath>
             </File>
+            <File>
+              <FileName>boot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\boot.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
