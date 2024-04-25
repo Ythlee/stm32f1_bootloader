@@ -2,7 +2,7 @@
 #include "bsp_spi.h"
 #include "delay.h"
 #include "stm32f1xx_hal_gpio.h"
-#include "usart.h"
+
 
 uint16_t W25QXX_TYPE = W25Q64; // 默认是W25Q64
 

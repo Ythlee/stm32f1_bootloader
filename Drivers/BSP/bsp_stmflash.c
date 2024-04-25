@@ -1,6 +1,6 @@
 #include "bsp_stmflash.h"
 #include "delay.h"
-#include "usart.h"
+
 
 /**
  * @brief       从指定地址读取一个半字 (16位数据)

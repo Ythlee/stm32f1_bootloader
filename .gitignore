@@ -16,6 +16,7 @@
 # Ignore generated files
 /Output/
 /Listing/
+/MDK-ARM/dma/
 /*.axf
 /*.map
 /*.hex
